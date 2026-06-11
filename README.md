@@ -52,7 +52,7 @@ resources/
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/Irmseroje-ship-it/MO-IT103-Seroje-M.git
+git clone https://github.com/lrmseroje-ship-it/MO-IT103-Seroje-M.git
 ```
 
 2. Open the project in Visual Studio Code.
@@ -81,7 +81,7 @@ Main.java
 
 **Marjury**
 
-GitHub: https://github.com/Irmseroje-ship-it
+GitHub: https://github.com/lrmseroje-ship-it/MO-IT103-Seroje-M.git
 
 ## Course Information
 
