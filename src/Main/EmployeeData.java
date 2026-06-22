@@ -2,41 +2,35 @@ package Main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
-import java.util.Map;
+
+import javax.swing.JOptionPane;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 // This class is responsible for loading employee details from a CSV file and providing access to employee information based on employee number.
 public class EmployeeData {
-    private Map<String, String[]> employeeMap;
+    private HashMap<String, String[]> employeeMap;
 
     public EmployeeData() {
         employeeMap = loadEmployees();
     }
 
-    private Map<String, String[]> loadEmployees() {
+    private HashMap<String, String[]> loadEmployees() {
 
-        Map<String, String[]> employeeMap =
-                new HashMap<>();
+        HashMap<String, String[]> employeeMap = new HashMap<>();
 
-        try (BufferedReader reader =
-                     new BufferedReader(
-                             new FileReader(
-                                     "resources/MotorPH_Employee Data - Employee Details.csv"))) {
-
-            String line;
-
-            reader.readLine();
+        try (BufferedReader reader = new BufferedReader( new FileReader( "resources/MotorPH_Employee Data - Employee Details.csv"))) {
+        String line;
+        reader.readLine();
 
             while ((line = reader.readLine()) != null) {
 
                 if (line.trim().isEmpty())
                     continue;
 
-                String[] data =
-                        line.split(
-                                ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                String[] data = line.split( ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
-                employeeMap.put(
-                        data[0],
-                        data);
+                employeeMap.put( data[0], data);
             }
 
         } catch (Exception e) {
@@ -53,4 +47,69 @@ public class EmployeeData {
 
         return employeeMap.get(employeeNumber);
     }
+    public boolean updateRecord(
+        String employeeId,
+        String position,
+        String hourlyRate) {
+
+    String[] employee = employeeMap.get(employeeId);
+
+    if(employee == null) {
+        return false;
+    }
+
+    // TEMPORARY indexes
+    employee[11] = position;
+    employee[18] = hourlyRate;
+
+    return true;
+}
+    public boolean deleteRecord(
+        String employeeId) {
+
+    if(employeeMap.containsKey(employeeId)) {
+        employeeMap.remove(employeeId);
+        return true;
+    }
+
+    return false;
+}
+//this method is used to save changes
+public void saveChangesToFile() {
+
+    try {
+
+        BufferedWriter writer = new BufferedWriter( new FileWriter("resources/MotorPH_Employee Data - Employee Details.csv"));
+
+        writer.write(
+                "Employee #,Last Name,First Name,Birthday,Address,"
+                + "Phone Number,SSS #,Philhealth #,TIN #,Pag-ibig #,"
+                + "Status,Position,Immediate Supervisor,Basic Salary,"
+                + "Rice Subsidy,Phone Allowance,Clothing Allowance,"
+                + "Gross Semi-monthly Rate,Hourly Rate");
+
+        writer.newLine();
+
+        for(String[] employee :
+                employeeMap.values()) {
+
+            writer.write(
+                    String.join(",",
+                            employee));
+            writer.newLine();
+        }
+
+        writer.close();
+
+    }
+    catch(Exception e) {
+
+        JOptionPane.showMessageDialog(
+            null,
+            "Error saving employee file: "
+            + e.getMessage(),
+            "File Error",
+            JOptionPane.ERROR_MESSAGE);
+    }
+}
 }

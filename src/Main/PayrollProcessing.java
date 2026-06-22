@@ -132,6 +132,10 @@ public class PayrollProcessing {
               .append(birthday)
               .append("\n");
 
+      result.append("Hourly Rate      : ₱")
+              .append(String.format("%.2f", hourlyRate))
+              .append("\n");  
+
         result.append("Month           : ")
               .append(monthName)
               .append("\n\n");

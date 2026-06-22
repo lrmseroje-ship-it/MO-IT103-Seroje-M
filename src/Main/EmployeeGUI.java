@@ -17,20 +17,19 @@ import java.io.FileReader;
 
 // This class is responsible for creating the graphical user interface (GUI) for the MotorPH Employee Payroll System, allowing users to search for employees and process payroll based on selected criteria.
 public class EmployeeGUI extends JFrame {
+    private JButton searchButton;
+    private JButton clearButton;
+    private JButton updateEmployeeButton;
+    private JButton viewDetailsButton;
     private JTextField employeeNumberField; // for entering the employee number to search for
     private JTextField employeeNameField; // for displaying the employee name based on the employee number entered (non-editable)
     private JButton processPayrollButton; // for processing payroll based on the employee number, month, and pay coverage entered
     private JComboBox<String> monthComboBox; // for selecting the month to process payroll for
     private JComboBox<String> payCoverageComboBox; // for selecting the pay coverage to process payroll for
 
-
-    private JButton searchButton;
-    private JButton clearButton;
-
-
     public EmployeeGUI() {
         setTitle("MotorPH Employee App");
-        setSize(450, 280);
+        setSize(550, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -81,24 +80,29 @@ public class EmployeeGUI extends JFrame {
         formPanel.add(new JLabel("Month"));
         formPanel.add(monthComboBox);
         //adding pay coverage options to the form panel
-        formPanel.add(new JLabel("Pay Coverage"));
-        formPanel.add(payCoverageComboBox);
+        //formPanel.add(new JLabel("Pay Coverage"));
+        //formPanel.add(payCoverageComboBox);
         //buttons section
         searchButton = new JButton("Search");
         clearButton = new JButton("Clear");
         processPayrollButton = new JButton("Process Payroll");
         processPayrollButton.setEnabled(false);
-       
+        updateEmployeeButton = new JButton("Update Employee");
+        viewDetailsButton = new JButton("View Details");
+
         JPanel buttonPanel = new JPanel();
         //adding buttons to the button panel
         buttonPanel.add(searchButton);
         buttonPanel.add(clearButton);
         buttonPanel.add(processPayrollButton);
-       //adding action listeners to the buttons
+        buttonPanel.add(updateEmployeeButton);
+        buttonPanel.add(viewDetailsButton);
+        //adding action listeners to the buttons
         processPayrollButton.addActionListener(e -> processPayroll());
         searchButton.addActionListener(e -> searchEmployee());
         clearButton.addActionListener(e -> clearFields());
-
+        updateEmployeeButton.addActionListener(e -> openUpdateEmployeeWindow());
+        viewDetailsButton.addActionListener(e -> openEmployeeDetailsWindow());
 
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -186,6 +190,48 @@ public class EmployeeGUI extends JFrame {
         employeeNumberField.setText("");
         employeeNameField.setText("");
     }
+    private void openUpdateEmployeeWindow() {
+
+    String employeeNumber =
+            employeeNumberField.getText();
+
+    if(employeeNumber.trim().isEmpty()) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Please search for an employee first.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+
+        return;
+    }
+
+    UpdateEmployeeGUI updateWindow =
+        new UpdateEmployeeGUI(
+                employeeNumberField.getText(),
+                employeeNameField.getText());
+
+    updateWindow.setVisible(true);
+    }
+    private void openEmployeeDetailsWindow() {
+        String employeeNumber = employeeNumberField.getText();
+
+        if(employeeNumber.trim().isEmpty()) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please search for an employee first.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+
+            return;
+        }
+
+        EmployeeDetailsGUI detailsWindow = new EmployeeDetailsGUI(employeeNumber);
+        detailsWindow.setVisible(true);
+
+    }
+
 }
 
 

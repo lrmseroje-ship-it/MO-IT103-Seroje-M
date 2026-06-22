@@ -3,11 +3,13 @@ package Main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.time.Duration;
+import java.time.LocalDate;
 // This class is responsible for loading attendance records from a CSV file and computing hours worked based on login and logout times.
 public class Attendance {
     public static Map<String, List<String[]>> loadAttendance() {
@@ -68,5 +70,56 @@ public class Attendance {
 		return Math.min(hours, 8.0);
 		
 	}
+	// This method calculates the total hours worked for an employee in the first and second cutoff periods of a given month, based on their attendance records.
+	public static double[] getCutoffHours(String employeeId, int month) { 
 
+    Map<String, List<String[]>> attendanceMap = loadAttendance();
+
+    double firstCutoffHours = 0;
+    double secondCutoffHours = 0;
+
+    List<String[]> records = attendanceMap.get(employeeId);
+
+    if(records == null) {
+        return new double[]{0,0};
+    }
+
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+	DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:mm");
+	
+	for (String[] record : records) {
+
+    try {
+
+        LocalDate date = LocalDate.parse(record[3].trim(), dateFormatter);
+
+        if (date.getMonthValue() != month) {
+            continue;
+        }
+
+        LocalTime login = LocalTime.parse(record[4].trim(), timeFormatter);
+        LocalTime logout = LocalTime.parse(record[5].trim(), timeFormatter);
+        double hours = computeHours(login, logout);
+
+        if (date.getDayOfMonth() <= 15) {
+            firstCutoffHours += hours;
+        } else {
+            secondCutoffHours += hours;
+        }
+
+    } catch (Exception e) {
+
+        System.out.println(
+            "Error processing attendance record for Employee "
+            + employeeId);
+
+    }
 }
+
+    return new double[]{
+        firstCutoffHours,
+        secondCutoffHours
+    };
+	}
+}
+	
