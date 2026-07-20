@@ -12,8 +12,6 @@ import java.awt.Color;
 import javax.swing.SwingConstants;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 // This class is responsible for creating the graphical user interface (GUI) for the MotorPH Employee Payroll System, allowing users to search for employees and process payroll based on selected criteria.
 public class EmployeeGUI extends JFrame {
@@ -24,12 +22,13 @@ public class EmployeeGUI extends JFrame {
     private JTextField employeeNumberField; // for entering the employee number to search for
     private JTextField employeeNameField; // for displaying the employee name based on the employee number entered (non-editable)
     private JButton processPayrollButton; // for processing payroll based on the employee number, month, and pay coverage entered
+    private JButton payrollSummaryButton; // for viewing the payroll summary of the employee based on the employee number, month, and pay coverage entered
     private JComboBox<String> monthComboBox; // for selecting the month to process payroll for
     private JComboBox<String> payCoverageComboBox; // for selecting the pay coverage to process payroll for
 
     public EmployeeGUI() {
         setTitle("MotorPH Employee App");
-        setSize(550, 300);
+        setSize(750, 320);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -80,8 +79,8 @@ public class EmployeeGUI extends JFrame {
         formPanel.add(new JLabel("Month"));
         formPanel.add(monthComboBox);
         //adding pay coverage options to the form panel
-        //formPanel.add(new JLabel("Pay Coverage"));
-        //formPanel.add(payCoverageComboBox);
+        formPanel.add(new JLabel("Pay Coverage"));
+        formPanel.add(payCoverageComboBox);
         //buttons section
         searchButton = new JButton("Search");
         clearButton = new JButton("Clear");
@@ -89,6 +88,7 @@ public class EmployeeGUI extends JFrame {
         processPayrollButton.setEnabled(false);
         updateEmployeeButton = new JButton("Update Employee");
         viewDetailsButton = new JButton("View Details");
+        payrollSummaryButton = new JButton("View Payroll Summary");
 
         JPanel buttonPanel = new JPanel();
         //adding buttons to the button panel
@@ -97,16 +97,18 @@ public class EmployeeGUI extends JFrame {
         buttonPanel.add(processPayrollButton);
         buttonPanel.add(updateEmployeeButton);
         buttonPanel.add(viewDetailsButton);
+        buttonPanel.add(payrollSummaryButton);
+
         //adding action listeners to the buttons
         processPayrollButton.addActionListener(e -> processPayroll());
         searchButton.addActionListener(e -> searchEmployee());
         clearButton.addActionListener(e -> clearFields());
         updateEmployeeButton.addActionListener(e -> openUpdateEmployeeWindow());
         viewDetailsButton.addActionListener(e -> openEmployeeDetailsWindow());
-
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
+    
     //method to process payroll based on the employee number, month, and pay coverage entered
     private void processPayroll() {
         String employeeNumber = employeeNumberField.getText();
@@ -142,50 +144,23 @@ public class EmployeeGUI extends JFrame {
                 JOptionPane.ERROR_MESSAGE);
         return;
     }
-    // Read employee details from the CSV file and search for the employee number
-    try {
 
-        BufferedReader reader =
-                new BufferedReader(
-                        new FileReader(
-                                "resources/MotorPH_Employee Data - Employee Details.csv"));
-        String line;
+    EmployeeData employeeData = new EmployeeData();
+    String[] employee = employeeData.getEmployee(employeeNumber);
 
-        reader.readLine(); // skip header
+    if (employee != null) {
+        employeeNameField.setText(employee[1] + "," + employee[2]); // Display employee name in the format "Last Name, First Name"
+        processPayrollButton.setEnabled(true); // Enable process payroll button when employee is found
 
-        boolean found = false;
-
-        while((line = reader.readLine()) != null) {
-
-            String[] data = line.split(",");
-
-            if(data[0].equals(employeeNumber)) {
-
-                String employeeName =
-                        data[1] + ", " + data[2];
-                employeeNameField.setText(employeeName);
-                found = true;
-                break;
-            }
-        }
-        reader.close();
-
-        if(!found) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Employee number not found.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    } catch(Exception e) {
+    } else {
         JOptionPane.showMessageDialog(
                 this,
-                "Error reading employee file.",
+                "Employee number not found.",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
-        }
+        processPayrollButton.setEnabled(false); // Disable process payroll button when employee is not found
     }
+}
     private void clearFields() {
         employeeNumberField.setText("");
         employeeNameField.setText("");

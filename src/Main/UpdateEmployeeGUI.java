@@ -130,7 +130,7 @@ public class UpdateEmployeeGUI extends JFrame {
             hourlyRate);
         // Displays a success or failure message based on whether the employee record was successfully updated, providing feedback to the user about the outcome of their action.
     if(updated) {
-        employeeData.saveChangesToFile();
+        //employeeData.saveChangesToFile();
         JOptionPane.showMessageDialog(
                 this,
                 "Employee record updated successfully.");
@@ -156,7 +156,7 @@ public class UpdateEmployeeGUI extends JFrame {
         EmployeeData employeeData = new EmployeeData();
         boolean deleted = employeeData.deleteRecord(employeeId);
         if(deleted) {
-            employeeData.saveChangesToFile();
+            //employeeData.saveChangesToFile();
             JOptionPane.showMessageDialog(
                     this,
                     "Employee record deleted successfully.");

@@ -29,6 +29,8 @@ public class PayrollProcessing {
         int monthNumber = monthObj.getValue();
 
         Map<String, List<String[]>> attendanceMap = Attendance.loadAttendance();
+        //added for checking
+        System.out.println("Employee Number :" + employeeNumber);
     
         StringBuilder result = new StringBuilder();
 
@@ -77,6 +79,12 @@ public class PayrollProcessing {
         int daysInMonth = YearMonth.of(2024, monthNumber).lengthOfMonth();
 
         List<String[]> records = attendanceMap.get(employeeNumber);
+        //added for checking
+        for (String[] record : records) {
+            System.out.println("Date: " + record[3] + "Login: " + record[4] + " Logout: " + record[5]);
+
+
+        }
 
         if (records != null) {
 
@@ -216,5 +224,8 @@ public class PayrollProcessing {
         result.append("================================================");
 
         return result.toString();
+    }
+    public String generatePayrollSummary(String month){
+      return "Payroll summary for " + month + " generated successfully.";
     }
 }

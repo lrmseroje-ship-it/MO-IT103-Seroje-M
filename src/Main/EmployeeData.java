@@ -2,7 +2,7 @@ package Main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
-
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import java.io.BufferedWriter;
@@ -47,6 +47,9 @@ public class EmployeeData {
 
         return employeeMap.get(employeeNumber);
     }
+    public ArrayList<String[]> getAllEmployees() {
+        return new ArrayList<>(employeeMap.values());
+    }
     public boolean updateRecord(
         String employeeId,
         String position,
@@ -62,6 +65,8 @@ public class EmployeeData {
     employee[11] = position;
     employee[18] = hourlyRate;
 
+    saveChangesToFile();
+
     return true;
 }
     public boolean deleteRecord(
@@ -69,6 +74,9 @@ public class EmployeeData {
 
     if(employeeMap.containsKey(employeeId)) {
         employeeMap.remove(employeeId);
+
+        saveChangesToFile();
+        
         return true;
     }
 
