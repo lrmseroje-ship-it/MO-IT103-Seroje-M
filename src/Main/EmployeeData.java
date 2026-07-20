@@ -120,4 +120,7 @@ public void saveChangesToFile() {
             JOptionPane.ERROR_MESSAGE);
     }
 }
+public HashMap<String, String[]> getEmployeeMap() {
+    return employeeMap; 
+}
 }

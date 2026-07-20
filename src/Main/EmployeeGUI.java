@@ -105,6 +105,7 @@ public class EmployeeGUI extends JFrame {
         clearButton.addActionListener(e -> clearFields());
         updateEmployeeButton.addActionListener(e -> openUpdateEmployeeWindow());
         viewDetailsButton.addActionListener(e -> openEmployeeDetailsWindow());
+        payrollSummaryButton.addActionListener(e -> showPayrollSummary());
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -206,8 +207,20 @@ public class EmployeeGUI extends JFrame {
         detailsWindow.setVisible(true);
 
     }
+    private void showPayrollSummary(){
+        PayrollProcessing payroll = new PayrollProcessing();
 
+        String summary = payroll.generatePayrollSummary(
+                (String) monthComboBox.getSelectedItem());
+
+        JOptionPane.showMessageDialog(
+                this,
+                summary,
+                "Payroll Summary",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
 }
+
 
 
 

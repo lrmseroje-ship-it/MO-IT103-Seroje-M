@@ -226,6 +226,17 @@ public class PayrollProcessing {
         return result.toString();
     }
     public String generatePayrollSummary(String month){
-      return "Payroll summary for " + month + " generated successfully.";
+      Month monthObj = Month.valueOf(month.toUpperCase());
+      int monthNumber = monthObj.getValue();
+
+      EmployeeData employeeData = new EmployeeData();
+
+      double totalGrossSalary = 0;
+      double totalDeductions = 0;
+      double totalNetSalary = 0;
+
+      int totalEmployees = employeeData.getEmployeeMap().size();
+
+      return "";
     }
 }
