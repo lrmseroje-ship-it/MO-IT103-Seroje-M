@@ -50,6 +50,7 @@ public class EmployeeData {
     public ArrayList<String[]> getAllEmployees() {
         return new ArrayList<>(employeeMap.values());
     }
+
     public boolean updateRecord(
         String employeeId,
         String position,
@@ -57,13 +58,27 @@ public class EmployeeData {
 
     String[] employee = employeeMap.get(employeeId);
 
-    if(employee == null) {
+    if (employee == null) {
         return false;
     }
 
-    // TEMPORARY indexes
     employee[11] = position;
     employee[18] = hourlyRate;
+
+    saveChangesToFile();
+
+    return true;
+}
+
+public boolean addRecord(String[] employee) {
+
+    String employeeId = employee[0];
+
+    if (employeeMap.containsKey(employeeId)) {
+        return false;
+    }
+
+    employeeMap.put(employeeId, employee);
 
     saveChangesToFile();
 

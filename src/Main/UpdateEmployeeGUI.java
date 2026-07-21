@@ -21,19 +21,16 @@ public class UpdateEmployeeGUI extends JFrame {
         setSize(500, 320);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(
-                new GridLayout(6,2,10,10));
+        JPanel panel = new JPanel(new GridLayout(6,2,10,10));
 
         panel.add(new JLabel("Employee Number"));
-        employeeNumberField =
-                new JTextField(employeeNumber);
-        employeeNumberField.setEditable(false);
+        employeeNumberField = new JTextField(employeeNumber);
+        employeeNumberField.setEditable(true);
         panel.add(employeeNumberField);
 
         panel.add(new JLabel("Employee Name"));
-        employeeNameField =
-                new JTextField(employeeName);
-        employeeNameField.setEditable(false);
+        employeeNameField = new JTextField(employeeName);
+        employeeNameField.setEditable(true);
         panel.add(employeeNameField);
         
         panel.add(new JLabel("Position"));
@@ -58,17 +55,19 @@ public class UpdateEmployeeGUI extends JFrame {
         panel.add(hourlyRateField);
 
         saveButton = new JButton("Save Changes");
+        JButton addButton = new JButton("Add Employee");
         deleteButton = new JButton("Delete Employee");
         cancelButton = new JButton("Cancel");
 
         panel.add(saveButton);
+        panel.add(addButton);
         panel.add(deleteButton);
-
         panel.add(cancelButton);
 
         add(panel);
         
         saveButton.addActionListener(e -> updateEmployee());
+        addButton.addActionListener(e -> addEmployee());
         deleteButton.addActionListener(e -> deleteEmployee());
         cancelButton.addActionListener( e -> dispose());
     }  
@@ -140,6 +139,60 @@ public class UpdateEmployeeGUI extends JFrame {
                 "Failed to update employee record.");
         }
 }
+private void addEmployee() {
+
+    String employeeId = employeeNumberField.getText().trim();
+    String employeeName = employeeNameField.getText().trim();
+    String position = positionField.getText().trim();
+    String hourlyRate = hourlyRateField.getText().trim();
+
+    if (employeeId.isEmpty() || employeeName.isEmpty()) {
+        JOptionPane.showMessageDialog(this,
+                "Employee Number and Name are required.");
+        return;
+    }
+
+    EmployeeData employeeData = new EmployeeData();
+
+    if (employeeData.getEmployee(employeeId) != null) {
+        JOptionPane.showMessageDialog(this,
+                "Employee already exists.");
+        return;
+    }
+
+    String[] employee = new String[19];
+
+    employee[0] = employeeId;
+
+    String[] name = employeeName.split(" ", 2);
+
+    if (name.length == 2) {
+        employee[2] = name[0];
+        employee[1] = name[1];
+    } else {
+        employee[2] = employeeName;
+        employee[1] = "";
+    }
+
+    employee[11] = position;
+    employee[18] = hourlyRate;
+
+    // Fill remaining fields so there are no null values
+    for (int i = 0; i < employee.length; i++) {
+        if (employee[i] == null) {
+            employee[i] = "";
+        }
+    }
+
+    if (employeeData.addRecord(employee)) {
+        JOptionPane.showMessageDialog(this,
+                "Employee added successfully.");
+    } else {
+        JOptionPane.showMessageDialog(this,
+                "Failed to add employee.");
+    }
+}
+
 // This method deletes the employee record when the "Delete Employee" button is clicked, after confirming the action with the user, and provides feedback on whether the deletion was successful.
     private void deleteEmployee() {
 
